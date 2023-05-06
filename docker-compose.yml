@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  coroot-node-agent:
+    image: ghcr.io/coroot/coroot-node-agent
+    container_name: coroot-node-agent
+    command: ["--cgroupfs-root=/host/sys/fs/cgroup"]
+    privileged: true
+    pid: "host"
+    ports:
+      - "8081:8081"
+    volumes:
+      - "/sys/kernel/debug:/sys/kernel/debug:rw"
+      - "/sys/fs/cgroup:/host/sys/fs/cgroup:ro"
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - "./prometheus:/etc/prometheus"
+
+  coroot:
+    image: ghcr.io/coroot/coroot
+    container_name: coroot
+    ports:
+      - "8080:8080"
